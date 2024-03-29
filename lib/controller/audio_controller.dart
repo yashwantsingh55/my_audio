@@ -20,6 +20,9 @@ class AudioController extends GetxController with StateMixin<dynamic> {
   // getter for player
   AudioPlayer get player => _player;
 
+  // getter for isPlaying
+  bool get isPlaying => playerState.value == PlayerState.playing;
+
   @override
   void onInit() {
     super.onInit();

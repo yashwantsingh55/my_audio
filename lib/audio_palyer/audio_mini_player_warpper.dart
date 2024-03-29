@@ -1,10 +1,9 @@
 // create statelss widget MiniPlayer
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:my_audio/audio_palyer/player.dart';
-import 'package:my_audio/audio_screen.dart';
 import 'package:my_audio/controller/audio_controller.dart';
 
 class AudioMiniPlayerWrapper extends StatelessWidget {
@@ -16,20 +15,25 @@ class AudioMiniPlayerWrapper extends StatelessWidget {
       return Material(
         child: GestureDetector(
           onTap: () {
-            Get.to(() => const AudioScreen());
+            // Get.to(() => const AudioScreen(),);
+
+            debugPrint("Current Page :- ${Get.currentRoute}");
           },
-          child: AudioMiniPlayer(
-            duration: controller.duration.value,
-            position: controller.position.value,
-            playerState: controller.playerState.value,
-            onPlay: () {
-              if (controller.playerState.value != PlayerState.playing) {
-                controller.play();
-              } else {
-                controller.pause();
-              }
-            },
-          ),
+          child: (Get.currentRoute == '/AudioScreen')
+              ? const SizedBox.shrink()
+              : AudioMiniPlayer(
+                  duration: controller.duration.value,
+                  position: controller.position.value,
+                  playerState: controller.playerState.value,
+                  onPlay: () => controller.isPlaying
+                      ? controller.pause()
+                      : controller.play(),
+                  // need to slide the from bottom to top
+                ).animate().slideY(
+                  begin: 1.0,
+                  end: 0.0,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.fastOutSlowIn),
         ),
       );
     });

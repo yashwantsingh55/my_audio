@@ -25,8 +25,13 @@ class SuperApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       builder: (context, child) {
-        return Column(
-          children: [Expanded(child: child!), const AudioMiniPlayerWrapper()],
+        return Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            child!,
+            const Positioned(
+                bottom: 60, right: 0, left: 0, child: AudioMiniPlayerWrapper())
+          ],
         );
       },
       home: const HomeScreen(),
