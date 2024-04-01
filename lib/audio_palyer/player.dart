@@ -1,5 +1,5 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:my_audio/audio_palyer/wave_slider.dart';
 
 class AudioPlayerWidget extends StatelessWidget {
@@ -10,20 +10,22 @@ class AudioPlayerWidget extends StatelessWidget {
     required this.playerState,
     required this.onPlay,
     required this.onSeek,
-    required this.onForwardOrBackward,
+    required this.onForward,
+    required this.onBackward,
+    required this.isPlaying,
   });
 
   final Duration duration;
   final Duration position;
-  final PlayerState playerState;
+  final ProcessingState playerState;
+
+  final bool isPlaying;
 
   // function handler on play , pause, seek, stop
   final void Function()? onPlay;
-  final void Function()? onForwardOrBackward;
+  final void Function()? onForward;
+  final void Function()? onBackward;
   final dynamic Function(double) onSeek;
-
-  bool get isPlaying => playerState == PlayerState.playing;
-  bool get isPaused => playerState == PlayerState.paused;
 
   // utils
   String _formatDuration(Duration duration) {
@@ -39,7 +41,7 @@ class AudioPlayerWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        MusicSlider(
+        WaveSlider(
           boxSpace: 0.3,
           fillColors: const [Color(0xffAD3F24)],
           emptyColors: const [Colors.grey],
@@ -70,8 +72,8 @@ class AudioPlayerWidget extends StatelessWidget {
             RotatedBox(
               quarterTurns: 2,
               child: IconButton(
-                key: const Key('play_button'),
-                onPressed: isPlaying ? null : onPlay,
+                key: const Key('play_backward'),
+                onPressed: onBackward,
                 iconSize: 48.0,
                 icon: Icon(Icons.play_arrow_rounded, color: color, size: 48),
                 color: color,
@@ -81,15 +83,18 @@ class AudioPlayerWidget extends StatelessWidget {
               key: const Key('pause_button'),
               onPressed: onPlay,
               iconSize: 48.0,
-              icon: isPlaying
-                  ? const Icon(Icons.pause_rounded)
-                  : const Icon(Icons.play_arrow_rounded),
+              icon: playerState == ProcessingState.loading ||
+                      playerState == ProcessingState.buffering
+                  ? const CircularProgressIndicator()
+                  : isPlaying
+                      ? const Icon(Icons.pause_rounded)
+                      : const Icon(Icons.play_arrow_rounded),
               color: color,
             ),
             IconButton(
-              key: const Key('stop_button'),
+              key: const Key('play_forward'),
               // onPressed: isPlaying || isPaused ? onPause : null,
-              onPressed: () {},
+              onPressed: onForward,
               iconSize: 48.0,
               icon: Icon(Icons.play_arrow_rounded, color: color, size: 48),
               color: color,
@@ -109,18 +114,16 @@ class AudioMiniPlayer extends StatelessWidget {
     required this.duration,
     required this.position,
     required this.playerState,
-    this.onPause,
+    required this.isPlaying,
     this.onPlay,
   });
 
   final Duration duration;
   final Duration position;
-  final PlayerState playerState;
+  final bool isPlaying;
+  final ProcessingState playerState;
 
   final void Function()? onPlay;
-  final void Function()? onPause;
-
-  bool get isPlaying => playerState == PlayerState.playing;
 
   @override
   Widget build(BuildContext context) {

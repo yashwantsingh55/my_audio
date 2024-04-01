@@ -1,5 +1,5 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 
 class Subtitle {
   final String text;
@@ -12,6 +12,8 @@ class Subtitle {
 class HighlightedSubtitle extends StatefulWidget {
   final AudioPlayer audioPlayer;
   final List<Subtitle> subtitles;
+
+  // named contructor regural inaterval defining the start and end duration
 
   const HighlightedSubtitle(
       {Key? key, required this.audioPlayer, required this.subtitles})
@@ -29,9 +31,19 @@ class HighlightedSubtitleState extends State<HighlightedSubtitle> {
   @override
   void initState() {
     super.initState();
-    positionStream = widget.audioPlayer.onPositionChanged;
+    positionStream = widget.audioPlayer.positionStream;
     currentSubtitle = widget.subtitles[0];
     scrollController = ScrollController();
+  }
+
+  Subtitle? findCurrentSubtitle(Duration position) {
+    for (int i = 0; i < widget.subtitles.length; i++) {
+      Subtitle subtitle = widget.subtitles[i];
+      if (position >= subtitle.start && position <= subtitle.end) {
+        return subtitle;
+      }
+    }
+    return null;
   }
 
   @override
@@ -41,20 +53,12 @@ class HighlightedSubtitleState extends State<HighlightedSubtitle> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           Duration position = snapshot.data!;
-          for (int i = 0; i < widget.subtitles.length; i++) {
-            Subtitle subtitle = widget.subtitles[i];
-            if (position >= subtitle.start &&
-                position <= subtitle.end &&
-                subtitle != currentSubtitle) {
-              currentSubtitle = subtitle;
-              scrollController.animateTo(
-                i * 100.0, // 56.0 is the height of a ListTile
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeOut,
-              );
-              break;
-            }
-          }
+          currentSubtitle = findCurrentSubtitle(position)!;
+          scrollController.animateTo(
+            widget.subtitles.indexOf(currentSubtitle) * 100.0,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+          );
         }
         return Scrollbar(
           controller: scrollController,

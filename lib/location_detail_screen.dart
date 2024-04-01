@@ -12,13 +12,12 @@ class LocationDetailScreen extends StatelessWidget {
         title: const Text('Location Detail'),
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Get.to(() => const AudioScreen());
-          },
-          child: const Text('Play Audio'),
-        ),
-      ),
+          child: ElevatedButton(
+        onPressed: () {
+          Get.to(() => const AudioScreen());
+        },
+        child: const Text('Play Audio'),
+      )),
     );
   }
 }

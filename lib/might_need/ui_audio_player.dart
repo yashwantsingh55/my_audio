@@ -155,7 +155,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             ),
           ],
         ),
-        MusicSlider(
+        WaveSlider(
           boxSpace: 0.2,
           fillColors: const [Color(0xffAD3F24)],
           emptyColors: const [Colors.grey],

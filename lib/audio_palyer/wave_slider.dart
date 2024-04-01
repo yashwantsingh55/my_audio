@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+
 /*
 wave: (x,t,a) => a*sin(x*0.3-t*0.3)*sin(x*0.3+t*0.3)
 
@@ -10,7 +11,7 @@ Here, x = Bar Count as X-axis
  
 */
 
-class MusicSlider extends StatefulWidget {
+class WaveSlider extends StatefulWidget {
   final double height, width, boxSpace, sliderValue;
   final int division;
   final double Function(int x, double t, double a)? wave;
@@ -18,7 +19,7 @@ class MusicSlider extends StatefulWidget {
   final Function(double sliderValue) onChanged;
   final List<Color> fillColors, emptyColors;
 
-  const MusicSlider({
+  const WaveSlider({
     super.key,
     required this.sliderValue,
     required this.onChanged,
@@ -34,10 +35,10 @@ class MusicSlider extends StatefulWidget {
   });
 
   @override
-  _MusicSliderState createState() => _MusicSliderState();
+  _WaveSliderState createState() => _WaveSliderState();
 }
 
-class _MusicSliderState extends State<MusicSlider> {
+class _WaveSliderState extends State<WaveSlider> {
   double _time = 0, _width = 0;
 
   void _sliderTap(TapUpDetails details) {

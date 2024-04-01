@@ -86,7 +86,7 @@ class AudioMiniPlayer extends StatelessWidget {
               shape: const CircleBorder(),
               side: const BorderSide(color: Colors.blue, width: 2),
             ),
-            child: player.state == PlayerState.playing
+            child: player == PlayerState.playing
                 ? const Icon(
                     Icons.pause,
                     color: Colors.blue,
